@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}{{ post['title'] }} · MiniBlog{% endblock %}
+{% block content %}
+<article class="article">
+  <a class="back-link" href="{{ url_for('index') }}">← All stories</a>
+  <p class="eyebrow">COMMUNITY STORY</p>
+  <h1>{{ post['title'] }}</h1>
+  <div class="post-meta">By <strong>{{ post['username'] }}</strong> <span>·</span> {{ post['created_at'] }}</div>
+  <div class="article-content">{{ post['content'] }}</div>
+  {% if current_user_is_admin %}
+  <form method="post" action="{{ url_for('delete_post', post_id=post['id']) }}" onsubmit="return confirm('Delete this post and its comments?');">
+    <button class="text-danger" type="submit">Delete this post as admin</button>
+  </form>
+  {% endif %}
+</article>
+<section class="comments">
+  <p class="eyebrow">JOIN THE CONVERSATION</p><h2>Comments <span class="muted">({{ comments|length }})</span></h2>
+  {% if current_user %}
+  <form method="post" class="form comment-form">
+    <label for="content">Add a comment as {{ current_user['username'] }}</label>
+    <textarea id="content" name="content" rows="3" maxlength="1000" required placeholder="Share your thoughts respectfully..."></textarea>
+    <div class="form-actions"><button class="button" type="submit">Post comment</button></div>
+  </form>
+  {% else %}
+  <div class="login-prompt">Please <a href="{{ url_for('login') }}">log in</a> to leave a comment.</div>
+  {% endif %}
+  <div class="comment-list">
+    {% for comment in comments %}
+    <div class="comment">
+      <div class="comment-avatar">{{ comment['username'][0]|upper }}</div>
+      <div class="comment-body"><div class="comment-meta"><strong>{{ comment['username'] }}</strong><span>{{ comment['created_at'] }}</span></div><p>{{ comment['content'] }}</p></div>
+    </div>
+    {% else %}<p class="muted">No comments yet. Start the conversation.</p>{% endfor %}
+  </div>
+</section>
+{% endblock %}

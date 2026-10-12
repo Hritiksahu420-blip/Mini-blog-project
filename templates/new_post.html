@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Write a post · MiniBlog{% endblock %}
+{% block content %}
+<div class="editor-wrap">
+  <a class="back-link" href="{{ url_for('index') }}">← Back to stories</a>
+  <p class="eyebrow">YOUR VOICE MATTERS</p><h1>Write a story</h1><p class="muted">Share something useful, interesting, or meaningful.</p>
+  <form method="post" class="form editor-form">
+    <label for="title">Post title</label><input id="title" name="title" required maxlength="120" placeholder="Give your story a title">
+    <label for="content">Your story</label><textarea id="content" name="content" required rows="10" placeholder="Start writing here..."></textarea>
+    <div class="form-actions"><a class="back-link" href="{{ url_for('index') }}">Cancel</a><button class="button" type="submit">Publish post →</button></div>
+  </form>
+</div>
+{% endblock %}

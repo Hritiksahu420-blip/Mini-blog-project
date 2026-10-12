@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Home · MiniBlog{% endblock %}
+{% block content %}
+<section class="hero">
+  <p class="eyebrow">THOUGHTS WORTH SHARING</p>
+  <h1>Ideas grow when<br><span>we share them.</span></h1>
+  <p class="hero-copy">A simple place to write, read, and join the conversation.</p>
+  {% if current_user %}<a class="button" href="{{ url_for('new_post') }}">＋ Write your first idea</a>
+  {% else %}<a class="button" href="{{ url_for('register') }}">Join the community</a>{% endif %}
+</section>
+<section class="section-heading">
+  <div><p class="eyebrow">THE COMMUNITY</p><h2>Latest stories</h2></div>
+  <span class="muted">{{ posts|length }} post{% if posts|length != 1 %}s{% endif %}</span>
+</section>
+{% if posts %}
+  <div class="post-grid">
+  {% for post in posts %}
+    <article class="post-card">
+      <div class="post-meta"><span class="dot"></span> {{ post['username'] }} <span>·</span> {{ post['created_at'] }}</div>
+      <h3><a href="{{ url_for('post_detail', post_id=post['id']) }}">{{ post['title'] }}</a></h3>
+      <p class="excerpt">{{ post['content']|truncate(180) }}</p>
+      <div class="card-bottom">
+        <a class="read-link" href="{{ url_for('post_detail', post_id=post['id']) }}">Read story →</a>
+        <span class="muted">☏ {{ post['comment_count'] }} comments</span>
+      </div>
+      {% if current_user_is_admin %}
+      <form class="admin-delete" method="post" action="{{ url_for('delete_post', post_id=post['id']) }}" onsubmit="return confirm('Delete this post and its comments?');">
+        <button class="text-danger" type="submit">Delete as admin</button>
+      </form>
+      {% endif %}
+    </article>
+  {% endfor %}
+  </div>
+{% else %}
+  <div class="empty-state"><div class="empty-icon">✎</div><h3>No posts yet</h3><p>Be the first to share an idea with the community.</p>
+  {% if current_user %}<a class="button" href="{{ url_for('new_post') }}">Create a post</a>{% endif %}</div>
+{% endif %}
+{% endblock %}
